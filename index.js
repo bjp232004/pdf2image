@@ -15,7 +15,7 @@ app.use('/static',express.static(__dirname + '/output'));
 
 var rule = new schedule.RecurrenceRule();
 rule.minute = new schedule.Range(0, 59, 1);
-var inputurl, query;
+var inputurl, query, resp;
 
 //Lets define a port we want to listen to
 const PORT=3030; 
@@ -52,6 +52,8 @@ var j = schedule.scheduleJob(rule, function(){
 
 //We need a function which handles requests and send response
 function handleRequest(request, response){
+    console.log('Start Request: ====>', new Date());
+    resp = response;
     query = url.parse(request.url,true).query;
     var currentTime = new Date().valueOf();
     var dirPath = __dirname + '/output/' + currentTime;
@@ -65,18 +67,23 @@ function handleRequest(request, response){
         var outputUrl = request.protocol + '://' + request.headers.host + '/static/';
         var filePath = dirPath + '/file.pdf';
 
-        var file = fs.createWriteStream(filePath);
         var request = http.get(inputUrl, function(response) {
-            response.pipe(file);
+            if(response.statusCode == '200') {
+                var file = fs.createWriteStream(filePath);
+                response.pipe(file);
 
-            file.on('finish', function() {
-                processPDF(dirPath, outputUrl);
-                file.close();  // close() is async
-            });
+                file.on('finish', function() {
+                    processPDF(dirPath, outputUrl);
+                    file.close();  // close() is async
+                });
+            } else {
+                resp.send('{errCode: '+response.statusCode+', errMsg: "Error: File not found!"}');
+                console.log('End Request: ====>', new Date());
+            }
         });
     }
     
-    response.end('It Works!! Path Hit: ' + inputurl);
+    //response.end('It Works!! Path Hit: ' + inputurl);
 }
 
 function processPDF(input, output) {
@@ -97,7 +104,9 @@ function processPDF(input, output) {
               tmpData = page.path.split('/output/');
               page.path = output + tmpData[1];
           });
+          resp.send(info);
           console.log(info);
+          console.log('End Request: ====>', new Date());
       }
     });   
 }
