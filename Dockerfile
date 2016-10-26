@@ -30,7 +30,7 @@ RUN apt-get update -qq && apt-get install -y \
   graphicsmagick
 
 
-COPY . /usr/src/app
+COPY https://github.com/bjp232004/pdf2image.git /usr/src/app
 WORKDIR /usr/src/app
 
 EXPOSE 3030 
