@@ -33,6 +33,8 @@ RUN apt-get update -qq && apt-get install -y \
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
+RUN git clone https://github.com/bjp232004/pdf2image.git
+
 EXPOSE 3030 
 #CMD [ "node index.js" ]
 ENTRYPOINT ["node","index.js"]
