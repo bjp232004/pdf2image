@@ -34,4 +34,6 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 EXPOSE 3030 
-CMD [ "bash", "node index.js" ]
+#CMD [ "node index.js" ]
+ENTRYPOINT ["node","index.js"]
+CMD ["--que","1"]

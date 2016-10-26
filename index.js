@@ -104,8 +104,8 @@ function processPDF(input, output) {
               tmpData = page.path.split('/output/');
               page.path = output + tmpData[1];
           });
-          resp.send(info);
           console.log(info);
+          resp.send(info);
           console.log('End Request: ====>', new Date());
       }
     });   
