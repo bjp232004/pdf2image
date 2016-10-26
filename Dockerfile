@@ -30,9 +30,9 @@ RUN apt-get update -qq && apt-get install -y \
   graphicsmagick
 
 
-COPY https://github.com/bjp232004/pdf2image.git /usr/src/app
+COPY . /usr/src/app
 WORKDIR /usr/src/app
- 
+
 EXPOSE 3030 
 #CMD [ "node index.js" ]
 ENTRYPOINT ["node","index.js"]
